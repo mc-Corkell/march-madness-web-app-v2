@@ -1,12 +1,13 @@
 const express = require('express');
-const app = express();
 const cors = require('cors');
-const port = 5000;
+const app = express();
 
 app.use(cors());
 
-app.get('/', (req, res) => {
-  res.send('Hello, this is Katie!');
+const port = 3001;
+
+app.get('/api/data', (req, res) => {
+  res.json({message: "Hello, Katie"});
 });
 
 app.listen(port, () => {

@@ -1,14 +1,26 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 function App() {
+  const [data, setData] = useState(null);
+
   useEffect(() => {
-    fetch('http://localhost:3001/api/data')
-      .then(res => res.json())
-      .then(data => console.log(data))
-      .catch(error => console.error('Error:', error));
+    const events = new EventSource('http://localhost:3001/freethrows');
+
+    events.onmessage = event => {
+      const parsed = JSON.parse(event.data);
+      console.log('Update:', parsed);
+      setData(parsed);
+    };
+
+    return () => events.close();
   }, []);
 
-  return <div>Katie's Basic Website Woohoo</div>;
+  return (
+    <div>
+      <h1>Live Data from Server</h1>
+      <pre>{data ? JSON.stringify(data, null, 2) : 'Waiting for updates...'}</pre>
+    </div>
+  );
 }
 
 export default App;
